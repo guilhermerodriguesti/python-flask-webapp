@@ -1,18 +1,22 @@
 import re
+import os
 from datetime import datetime
 from flask import render_template
 from flask import Flask
 
 app = Flask(__name__)
 
-@app.route("/oi/")
-@app.route("/oi/<name>")
-def hello_there(name = None):
-    return render_template(
-        "hello_there.html",
-        name=name,
-        date=datetime.now()
-    )
+@app.route("/branch/")
+@app.route("/branch/<name>")
+def branch(name=None):
+    if not name:
+        name = 'dev'
+        os.mkdir(name)
+    else:
+        if not os.path.isdir(name):
+            os.mkdir(name)
+    return render_template("branch.html", name=name, date=datetime.now())
+
 @app.route('/devops')
 def index():
     return 'DevOps is awesome!!'
@@ -35,6 +39,3 @@ def get_data():
     return app.send_static_file("data.json")
 
 app.run(host='0.0.0.0', port=8000)
-
-
-
